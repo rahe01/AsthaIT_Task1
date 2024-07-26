@@ -1,5 +1,6 @@
-<!-- DateOfBirth.svelte -->
 <script>
+// @ts-nocheck
+
   export let day = '';
   export let month = '';
   export let year = '';
@@ -15,39 +16,35 @@
   const years = Array.from({ length: 120 }, (_, i) => new Date().getFullYear() - i);
 
   function validateDate() {
-    // @ts-ignore
     const selectedDate = new Date(year, month - 1, day);
     const today = new Date();
 
-    if (!day || !month || !year || selectedDate > today) {
+    if (!day || !month || !year || isNaN(selectedDate) || selectedDate > today) {
       dateError = 'Invalid date. Please select a valid date.';
     } else {
       dateError = '';
     }
   }
 
-  // Event listeners for date selection
-  $: {
-    validateDate();
-  }
+  $: validateDate();
 </script>
 
 <div>
-  <label class="gender-l">Date of Birth</label>
+  <label class="dob-label">Date of Birth</label>
   <div class="dob">
-    <select bind:value={day} class="gender-in">
+    <select bind:value={day} class="dob-input">
       <option value="">Day</option>
       {#each days as day}
         <option value={day}>{day}</option>
       {/each}
     </select>
-    <select bind:value={month} class="gender-in">
+    <select bind:value={month} class="dob-input">
       <option value="">Month</option>
       {#each months as month, index}
         <option value={index + 1}>{month}</option>
       {/each}
     </select>
-    <select bind:value={year} class="gender-in">
+    <select bind:value={year} class="dob-input">
       <option value="">Year</option>
       {#each years as year}
         <option value={year}>{year}</option>
@@ -55,7 +52,7 @@
     </select>
   </div>
   {#if dateError}
-    <div class="mobile"><span>{dateError}</span></div>
+    <div class="dob-error"><span>{dateError}</span></div>
   {/if}
 </div>
 
@@ -65,7 +62,7 @@
     gap: 10px;
   }
 
-  .gender-in {
+  .dob-input {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -76,15 +73,11 @@
     padding: 5px;
   }
 
-  .gender-in input {
-    margin-left: 170px;
-  }
-
-  .gender-l {
+  .dob-label {
     margin-bottom: 10px;
   }
 
-  .mobile {
+  .dob-error {
     font-size: 12px;
     color: #dc3545;
     text-align: center;
